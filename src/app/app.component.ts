@@ -1,32 +1,39 @@
-import { Component } from '@angular/core';
+import { WeatherData } from './models/weather.model';
+import { Component, OnInit } from '@angular/core';
+import { WeatherService } from './services/weather.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
-  temperature = 111;
-  coldImageUrl = 'assets/cold.jpg';
-  hotImageUrl = 'assets/hot.jpg';
-  imageUrl!: string;
+export class AppComponent implements OnInit {
 
-  weatherState = 'Cloudy';
-  minTemp = 5;
-  maxTemp = 15;
-  feelsLike = 8;
-  humidity = 80;
-  windSpeed = 5;
+  cityName: string = "Toronto";
+  weatherData?: WeatherData;
 
-  constructor(){
-    this.updateImage();
+  constructor(private weatherService: WeatherService){
   }
 
-  updateImage(): void {
-    if (this.temperature < 15) {
-      this.imageUrl = this.coldImageUrl;
-    } else {
-      this.imageUrl = this.hotImageUrl;
+  ngOnInit(): void {
+    this.getWeatherData(this.cityName);
     }
-  }
+
+    onSubmit(){
+      this.getWeatherData(this.cityName);
+      this.cityName = "";
+    }
+
+    private getWeatherData(cityName: string): void {
+      this.weatherService.getWeatherData(cityName).subscribe({
+        next: (response: any) => {
+          console.log('Weather Data:', response);
+          this.weatherData = response;
+        },
+        error: (error) => {
+          console.error('Error fetching weather data:', error);
+        }
+      });
+    }
+
 }

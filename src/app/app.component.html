@@ -1,16 +1,39 @@
-<div class="weather-container">
-  <div class="weather-image" [style.background-image]="'url(' + imageUrl + ')'">
-    <div class="temperature">
-      <h1>{{ temperature }}°C</h1>
+<div class="search-container">
+  <form #form="ngForm" (submit)="onSubmit()">
+    <input type="text" placeholder="City Name" name="city" [(ngModel)]="cityName" />
+    <button type="submit">Search</button>
+  </form>
+</div>
+
+<div class="weather-container" *ngIf="weatherData">
+  <div class="weather-image" [style.background-image]="'url(assets/hot.jpg)'" *ngIf="weatherData.main.temp > 15">
+    <div class="overlay">
+      <div class="city">
+        <h1>{{ weatherData.name }}</h1>
+      </div>
+      <div class="temperature">
+        <h1>{{ weatherData.main.temp }}°C</h1>
+      </div>
+    </div>
+  </div>
+
+  <div class="weather-image" [style.background-image]="'url(assets/cold.jpg)'" *ngIf="weatherData.main.temp <= 15">
+    <div class="overlay">
+      <div class="city">
+        <h1>{{ weatherData.name }}</h1>
+      </div>
+      <div class="temperature">
+        <h1>{{ weatherData.main.temp |number:'1.0-0'}}°C</h1>
+      </div>
     </div>
   </div>
 
   <div class="weather-details">
-    <p><strong>Weather:</strong> {{ weatherState }}</p>
-    <p><strong>Min Temp:</strong> {{ minTemp }}°C</p>
-    <p><strong>Max Temp:</strong> {{ maxTemp }}°C</p>
-    <p><strong>Feels Like:</strong> {{ feelsLike }}°C</p>
-    <p><strong>Humidity:</strong> {{ humidity }}%</p>
-    <p><strong>Wind:</strong> {{ windSpeed }} m/s</p>
+    <p><strong>Weather:{{weatherData.weather[0]?.description}}</strong></p>
+    <p><strong>Min Temp:</strong> {{ weatherData.main.temp_min |number:'1.0-0'}}°C</p>
+    <p><strong>Max Temp:</strong> {{ weatherData.main.temp_max |number:'1.0-0'}}°C</p>
+    <p><strong>Feels Like:</strong>{{weatherData.main.feels_like|number:'1.0-0'}}°C</p>
+    <p><strong>Humidity:</strong> {{ weatherData.main.humidity}}%</p>
+    <p><strong>Wind:</strong> {{ weatherData.wind.speed }} m/s</p>
   </div>
 </div>
